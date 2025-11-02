@@ -1,0 +1,38 @@
+# .github/workflows/ci.yml
+name: CI
+on:
+  push:
+  pull_request:
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      # prevent Expo from trying to modify tsconfig in CI
+      EXPO_NO_TYPESCRIPT_SETUP: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci || npm i
+
+      # ⛔ remove the interactive Expo step
+      # - run: npx expo install --fix
+
+      - name: Typecheck
+        run: npm run typecheck --if-present
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Tests
+        run: npm test -- --ci --watchAll=false --passWithNoTests

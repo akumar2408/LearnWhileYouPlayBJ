@@ -1,4 +1,4 @@
-/* eslint config for Expo React Native + TypeScript */
+/* Expo React Native + TS — relaxed for inline styles */
 module.exports = {
     root: true,
     env: { es2022: true, node: true },
@@ -7,24 +7,29 @@ module.exports = {
       "plugin:@typescript-eslint/recommended",
       "plugin:react/recommended",
       "plugin:react-hooks/recommended",
-      "plugin:react-native/all"
+      // use recommended (not "all") to avoid strict style-only rules
+      "plugin:react-native/recommended",
     ],
     parser: "@typescript-eslint/parser",
-    parserOptions: {
-      ecmaFeatures: { jsx: true },
-      sourceType: "module"
-      // note: no "project" field so CI is fast & non-type-aware
-    },
+    parserOptions: { ecmaFeatures: { jsx: true }, sourceType: "module" },
     plugins: ["@typescript-eslint", "react", "react-hooks", "react-native"],
     settings: { react: { version: "detect" } },
     rules: {
-      // RN-friendly defaults
+      // Keep signal/noise good for your codebase
       "react/prop-types": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "react-native/no-inline-styles": "off",
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      "react-hooks/exhaustive-deps": "warn",
+  
+      // 💅 Turn off strict RN style rules that break your current code
+      "react-native/no-color-literals": "off",
+      "react-native/sort-styles": "off",
+      "react-native/no-unused-styles": "off",
+      "react-native/no-single-element-style-arrays": "off",
+  
+      // TS comments — just warn for now
+      "@typescript-eslint/ban-ts-comment": ["warn", { "ts-expect-error": "allow-with-description" }],
     },
-    ignorePatterns: ["node_modules/", "android/", "ios/", "dist/", "build/", ".expo/"]
+    ignorePatterns: ["node_modules/", "android/", "ios/", "dist/", "build/", ".expo/"],
   };
   
